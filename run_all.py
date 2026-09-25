@@ -61,12 +61,29 @@ def main():
             # Check for zip
             zip_candidates = [f for f in os.listdir(root_dir) if f.endswith(".zip") and "student_resource" in f]
             if not zip_candidates:
-                print("  Dataset zip not found locally. Attempting to download from GitHub release v1.0.0...")
+                zip_filename = "6ab10eb3b23ba_student_resource.zip"
+                download_url = f"https://github.com/Nikkilreddy01/fast-record-indexer/releases/download/v1.0.0/{zip_filename}"
+                print(f"  Dataset zip not found locally. Downloading from public release: {download_url}...")
                 try:
-                    subprocess.run(["gh", "release", "download", "v1.0.0", "--pattern", "*.zip"], check=True)
-                    zip_candidates = [f for f in os.listdir(root_dir) if f.endswith(".zip") and "student_resource" in f]
-                except Exception as e:
-                    print(f"  Note: 'gh release download' not available or not logged in: {e}")
+                    import urllib.request
+                    def report_progress(block_num, block_size, total_size):
+                        downloaded = block_num * block_size
+                        if total_size > 0:
+                            percent = min(100.0, (downloaded / total_size) * 100.0)
+                            mb = downloaded / (1024 * 1024)
+                            total_mb = total_size / (1024 * 1024)
+                            sys.stdout.write(f"\r  Downloading dataset: {mb:.1f}MB / {total_mb:.1f}MB ({percent:.1f}%)")
+                            sys.stdout.flush()
+                    urllib.request.urlretrieve(download_url, os.path.join(root_dir, zip_filename), reporthook=report_progress)
+                    print("\n  Download complete!")
+                    zip_candidates = [zip_filename]
+                except Exception as dl_err:
+                    print(f"\n  Direct download failed: {dl_err}. Trying 'gh release download'...")
+                    try:
+                        subprocess.run(["gh", "release", "download", "v1.0.0", "--pattern", "*.zip"], check=True)
+                        zip_candidates = [f for f in os.listdir(root_dir) if f.endswith(".zip") and "student_resource" in f]
+                    except Exception as e:
+                        print(f"  Note: 'gh release download' not available or failed: {e}")
 
             if zip_candidates:
                 zip_path = os.path.join(root_dir, zip_candidates[0])
@@ -81,10 +98,9 @@ def main():
             else:
                 print("\n" + "=" * 70)
                 print("ERROR: dataset/test/test_source1.tsv not found!")
-                print("To download the 1.0 GB dataset on this machine, run:")
-                print("  gh release download v1.0.0")
-                print("Or download from your private release in your browser:")
-                print("  https://github.com/Nikkilreddy01/fast-record-indexer/releases/tag/v1.0.0")
+                print("Please download the 1.01 GB dataset from:")
+                print(f"  https://github.com/Nikkilreddy01/fast-record-indexer/releases/download/v1.0.0/6ab10eb3b23ba_student_resource.zip")
+                print("And place it in this folder, then run run_all.bat again.")
                 print("=" * 70 + "\n")
                 sys.exit(1)
 
