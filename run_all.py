@@ -60,9 +60,17 @@ def main():
         else:
             # Check for zip
             zip_candidates = [f for f in os.listdir(root_dir) if f.endswith(".zip") and "student_resource" in f]
+            if not zip_candidates:
+                print("  Dataset zip not found locally. Attempting to download from GitHub release v1.0.0...")
+                try:
+                    subprocess.run(["gh", "release", "download", "v1.0.0", "--pattern", "*.zip"], check=True)
+                    zip_candidates = [f for f in os.listdir(root_dir) if f.endswith(".zip") and "student_resource" in f]
+                except Exception as e:
+                    print(f"  Note: 'gh release download' not available or not logged in: {e}")
+
             if zip_candidates:
                 zip_path = os.path.join(root_dir, zip_candidates[0])
-                print(f"  Extracting {zip_candidates[0]}...")
+                print(f"  Extracting {zip_candidates[0]} (this takes ~30 seconds)...")
                 with zipfile.ZipFile(zip_path, 'r') as zf:
                     zf.extractall(root_dir)
                 if os.path.exists(alt_test_s1) and not os.path.exists("dataset"):
@@ -71,8 +79,13 @@ def main():
                     except Exception:
                         shutil.copytree(os.path.join(root_dir, "student_resource", "dataset"), "dataset")
             else:
+                print("\n" + "=" * 70)
                 print("ERROR: dataset/test/test_source1.tsv not found!")
-                print("Please copy the dataset/ folder or student_resource zip into this directory.")
+                print("To download the 1.0 GB dataset on this machine, run:")
+                print("  gh release download v1.0.0")
+                print("Or download from your private release in your browser:")
+                print("  https://github.com/Nikkilreddy01/fast-record-indexer/releases/tag/v1.0.0")
+                print("=" * 70 + "\n")
                 sys.exit(1)
 
     print("  Dataset verified successfully.")
