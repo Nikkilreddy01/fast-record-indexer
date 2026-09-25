@@ -25,3 +25,6 @@ output_v1_baseline/
 !entity_model.joblib
 dataset
 dashboard/output
+*.pem
+*.key
+*.id_rsa
