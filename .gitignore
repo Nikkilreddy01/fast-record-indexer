@@ -11,9 +11,9 @@ dataset/
 student_resource/
 *.zip
 *.tar.gz
-*.mp4
 *.mov
-*.pdf
+!*.pdf
+!*.mp4
 frames/
 user_screenshot_latest.png
 
