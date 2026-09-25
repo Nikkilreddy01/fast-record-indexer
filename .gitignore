@@ -1,0 +1,27 @@
+# Python & Virtual Environments
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.DS_Store
+
+# Large Archives & Datasets (Transfer separately or via student resource link)
+dataset/
+student_resource/
+*.zip
+*.tar.gz
+*.mp4
+*.mov
+*.pdf
+frames/
+user_screenshot_latest.png
+
+# Output prediction TSVs (generated dynamically)
+output/
+output_v1_baseline/
+
+# Keep entity_model.joblib if under 50MB (it is 1.2MB, perfectly safe for git)
+!entity_model.joblib
+dataset
+dashboard/output
