@@ -20,6 +20,7 @@ user_screenshot_latest.png
 # Output prediction TSVs (generated dynamically)
 output/
 output_v1_baseline/
+pipeline.log
 
 # Keep entity_model.joblib if under 50MB (it is 1.2MB, perfectly safe for git)
 !entity_model.joblib
