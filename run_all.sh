@@ -26,6 +26,8 @@ if [ "$OS_TYPE" = "Darwin" ]; then
     NUM_CORES=$(sysctl -n hw.ncpu 2>/dev/null || echo 4)
 elif [ "$OS_TYPE" = "Linux" ]; then
     NUM_CORES=$(nproc 2>/dev/null || grep -c ^processor /proc/cpuinfo 2>/dev/null || echo 4)
+elif [[ "$OS_TYPE" =~ MINGW|MSYS|CYGWIN ]]; then
+    NUM_CORES=${NUMBER_OF_PROCESSORS:-4}
 else
     NUM_CORES=4
 fi
